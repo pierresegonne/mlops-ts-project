@@ -14,8 +14,8 @@ steps:
   # Install dependencies
   - name: python:3.8
     id: 'Install dependencies'
-    entrypoint: poetry
-    args: ["install"]
+    entrypoint: python
+    args: ["-m", "poetry", "install"]
 
   # Check steps -
   # Lint
