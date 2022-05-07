@@ -1,5 +1,15 @@
 # mlops-ts-project
 
+Cloud run URL https://mlops-ts-project-jfnx5klx2a-od.a.run.app
+
+
+Can be queried with
+
+```
+curl -H \
+"Authorization: Bearer $(gcloud auth print-identity-token)" \
+https://mlops-ts-project-jfnx5klx2a-od.a.run.app
+```
 
 __set environment variables__
 
