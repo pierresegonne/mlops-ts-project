@@ -1,0 +1,69 @@
+steps:
+  # Install Poetry
+  - name: python:3.8
+    id: 'Install poetry'
+    entrypoint: pip
+    args: ["install", "poetry==1.1.12"]
+
+  # Update pip
+  - name: python:3.8
+    id: 'Update pip'
+    entrypoint: python
+    args: ["-m", "pip", "install", "--upgrade", "pip"]
+
+  # Install dependencies
+  - name: python:3.8
+    id: 'Install dependencies'
+    entrypoint: poetry
+    args: ["install"]
+
+  # Check steps -
+  # Lint
+  - name: python:3.8
+    id: 'Lint'
+    entrypoint: python
+    args: ["-m", "pylint", "-E", "src", "tests"]
+
+  # Typecheck
+  - name: python:3.8
+    id: 'Typecheck'
+    entrypoint: python
+    args: ["-m", "mypy", "--config-file=scripts/mypy.ini", "--namespace-packages", "--show-error-codes", "src"]
+
+
+  # Run unit tests
+  - name: python:3.8
+    id: 'Test'
+    entrypoint: python
+    args: ["-m", "pytest", "-vv", "--junitxml=${SHORT_SHA}_test_log.xml"]
+
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build'
+    args: ['build', '--no-cache', '-t',
+           'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}', '.', '-f', 'Dockerfile']
+
+  # Docker push to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push'
+    args: ['push',  'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}']
+
+  # Deploy to cloud run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    id: 'Deploy'
+    args: ['gcloud', 'run', 'services', 'update', 'mlops-ts-project',
+           '--platform=managed', '--image=eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}',
+           '--region=europe-west1']
+
+# Save test logs to Google Cloud Storage
+artifacts:
+  objects:
+    location: gs://mlops-ts-project/build-logs/
+    paths:
+      - ${SHORT_SHA}_test_log.xml
+
+# Store images in Google Artifact Registry
+images:
+  - eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}
+
+timeout: 1000s

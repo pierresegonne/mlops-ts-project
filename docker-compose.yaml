@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  ts-project:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    volumes:
+      - .:/app
+    ports:
+      - "8000:5000"
