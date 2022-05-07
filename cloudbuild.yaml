@@ -33,4 +33,4 @@ artifacts:
 images:
   - eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}
 
-timeout: 1000s
+timeout: 3600s
