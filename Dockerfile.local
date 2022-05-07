@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.8.12-slim-bullseye
+FROM python:3.8.12
 ENV APP_HOME /app
 WORKDIR $APP_HOME
 # Allow statements and log messages to immediately appear in the Knative logs
