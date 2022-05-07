@@ -1,5 +1,6 @@
 import logging
 import os
+from io import StringIO
 
 import arrow
 import pandas as pd
@@ -14,6 +15,14 @@ BUCKET_NAME = "mlops-ts-project"
 BUCKET_DATA_PATH = "data"
 
 
+def get_df_from_bucket(name: str) -> pd.DataFrame:
+    client = storage.Client(os.environ["EMAP_PROJECT_ID"])
+
+    bucket = client.get_bucket(BUCKET_NAME)
+    data_str = bucket.blob(f"{BUCKET_DATA_PATH}/{name}.csv").download_as_text()
+    return pd.read_csv(StringIO(data_str), index_col="datetime", parse_dates=True)
+
+
 def save_df_to_bucket(name: str, df: pd.DataFrame) -> None:
     client = storage.Client(os.environ["EMAP_PROJECT_ID"])
 
@@ -23,10 +32,29 @@ def save_df_to_bucket(name: str, df: pd.DataFrame) -> None:
     )
 
 
+def _clean_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Only keep relevant columns for the model"""
+    # datetime is the index
+    relevant_columns = [
+        "zone_key",
+        "power_production_wind_avg",
+        "power_production_solar_avg",
+        "latest_forecasted_solar_avg",
+        "latest_forecasted_wind_x_avg",
+        "latest_forecasted_wind_y_avg",
+        "latest_forecasted_dewpoint_avg",
+        "latest_forecasted_temperature_avg",
+        "latest_forecasted_precipitation_avg",
+        "latest_forecasted_production_wind_avg",
+        "latest_forecasted_production_solar_avg",
+    ]
+    return df[relevant_columns].copy()
+
+
 def update() -> None:
     time_range = (DATA_START_DATE, arrow.now().format("YYYY-MM-DD"))
 
     for zone in Zone:
         logger.info(f"Updating {zone} between {time_range}")
-        df = query_flowtraced_data(zone, time_range)
+        df = _clean_df(query_flowtraced_data(zone, time_range))
         save_df_to_bucket(zone.value, df)
