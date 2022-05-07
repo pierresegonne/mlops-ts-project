@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Any, Callable, Iterable, List, Mapping, Optional, cast
 
 import psycopg2
@@ -22,14 +23,6 @@ def get_gcp_secret(project_id: str, secret_id: str, version_id: str) -> str:
     payload = str(response.payload.data.decode("UTF-8"))
 
     return payload
-
-
-EMAP_PROJECT_ID = "tmrow-152415"
-DB_HOST = "127.0.0.1"
-DB_USER = "readonly"
-DB_PASSWORD = get_gcp_secret(EMAP_PROJECT_ID, "READONLY_POSTGRES_PASSWORD", "latest")
-DB_NAME = "electricitymap"
-DB_PORT = "5432"
 
 
 class Cursor(Iterable):
@@ -111,7 +104,13 @@ def get_pg_connection(force_reconnect=False) -> Connection:
         logger.info("Database connection: reconnecting as connection was closed")
 
     connection: Connection = psycopg2.connect(
-        user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT, database=DB_NAME
+        user=os.environ["POSTGRES_USER"],
+        password=get_gcp_secret(
+            os.environ["EMAP_PROJECT_ID"], "READONLY_POSTGRES_PASSWORD", "latest"
+        ),
+        host=os.environ["POSTGRES_HOST"],
+        port=os.environ.get("POSTGRES_PORT", "5432"),
+        database=os.environ["POSTGRES_DB"],
     )
     _pg_connection = connection
 

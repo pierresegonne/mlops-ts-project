@@ -1,10 +1,9 @@
 import logging
+import os
 
 import arrow
 import pandas as pd
 from google.cloud import storage
-
-storage_client = storage.Client()
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +15,7 @@ BUCKET_DATA_PATH = "data"
 
 
 def save_df_to_bucket(name: str, df: pd.DataFrame) -> None:
-    client = storage.Client()
+    client = storage.Client(os.environ["EMAP_PROJECT_ID"])
 
     bucket = client.get_bucket(BUCKET_NAME)
     bucket.blob(f"{BUCKET_DATA_PATH}/{name}.csv").upload_from_string(

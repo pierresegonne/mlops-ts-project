@@ -1,15 +1,21 @@
 steps:
-  # Install Poetry
-  - name: python:3.8
-    id: 'Install poetry'
-    entrypoint: pip
-    args: ["install", "poetry==1.1.12"]
-
   # Update pip
   - name: python:3.8
     id: 'Update pip'
     entrypoint: python
     args: ["-m", "pip", "install", "--upgrade", "pip"]
+
+  # Install poetry
+  - name: python:3.8
+    id: 'Install poetry'
+    entrypoint: pip
+    args: ["install", "poetry==1.1.12"]
+
+  # Configure poetry
+  - name: python:3.8
+    id: 'Configure poetry'
+    entrypoint: poetry
+    args: ["config", "virtualenvs.create", "false"]
 
   # Install dependencies
   - name: python:3.8

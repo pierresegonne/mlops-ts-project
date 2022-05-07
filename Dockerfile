@@ -6,6 +6,11 @@ WORKDIR $APP_HOME
 ENV PYTHONUNBUFFERED True
 ENV FLASK_APP=src/__main__.py
 ENV FLASK_RUN_HOST=0.0.0.0
+ENV ENV=development
+ENV POSTGRES_HOST=127.0.0.1
+ENV POSTGRES_DB=electricitymap
+ENV POSTGRES_USER=postgres
+ENV EMAP_PROJECT_ID=tmrow-152415
 COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
 COPY .python-version .python-version
