@@ -3,7 +3,7 @@ import os
 
 import arrow
 import pandas as pd
-from google.cloud import storage
+from google.cloud import storage  # type: ignore[attr-defined]
 
 logger = logging.getLogger(__name__)
 
