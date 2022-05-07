@@ -22,6 +22,8 @@ RUN poetry config virtualenvs.create false
 RUN poetry install
 EXPOSE 5000
 COPY src src
+COPY scripts scripts
+COPY tests tests
 # Run the web service on container startup. Here we use the gunicorn
 # webserver, with one worker process and 8 threads.
 # For environments with multiple CPU cores, increase the number of workers

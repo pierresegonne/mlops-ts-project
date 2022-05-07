@@ -1,35 +1,14 @@
 steps:
-  # Install dependencies
-  - name: python:3.8
-    id: 'Install dependencies'
-    entrypoint: pip
-    args: ["install", "-r", "cloudbuild_requirements.txt", "--user"]
-
-  # Check steps -
-  # Lint
-  - name: python:3.8
-    id: 'Lint'
-    entrypoint: python
-    args: ["-m", "pylint", "-E", "src", "tests"]
-
-  # Typecheck
-  - name: python:3.8
-    id: 'Typecheck'
-    entrypoint: python
-    args: ["-m", "mypy", "--config-file=scripts/mypy.ini", "--namespace-packages", "--show-error-codes", "src"]
-
-
-  # Run unit tests
-  - name: python:3.8
-    id: 'Test'
-    entrypoint: python
-    args: ["-m", "pytest", "-vv", "--junitxml=${SHORT_SHA}_test_log.xml"]
-
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build'
     args: ['build', '--no-cache', '-t',
            'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}', '.', '-f', 'Dockerfile']
+
+  # Test
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Test'
+    args: ['run', '--rm', '--entrypoint', 'poetry', '-it', 'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}', 'run', 'check']
 
   # Docker push to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
