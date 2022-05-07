@@ -1,11 +1,10 @@
 import logging
-
 from typing import Any, Callable, Iterable, List, Mapping, Optional, cast
-from google.cloud import secretmanager
+
 import psycopg2
+from google.cloud import secretmanager
 
 logger = logging.getLogger(__name__)
-
 
 
 def get_gcp_secret(project_id: str, secret_id: str, version_id: str) -> str:
@@ -14,12 +13,16 @@ def get_gcp_secret(project_id: str, secret_id: str, version_id: str) -> str:
     name = client.secret_version_path(project_id, secret_id, version_id)
 
     # Access the secret version
-    response = client.access_secret_version(name)
+    request = secretmanager.AccessSecretVersionRequest(
+        name=name,
+    )
+    response = client.access_secret_version(request=request)
 
     # Return the secret payload
     payload = response.payload.data.decode("UTF-8")
 
     return payload
+
 
 EMAP_PROJECT_ID = "tmrow-152415"
 DB_HOST = "127.0.0.1"
@@ -27,6 +30,7 @@ DB_USER = "readonly"
 DB_PASSWORD = get_gcp_secret(EMAP_PROJECT_ID, "READONLY_POSTGRES_PASSWORD", "latest")
 DB_NAME = "electricitymap"
 DB_PORT = "5432"
+
 
 class Cursor(Iterable):
     def __enter__(self) -> "Cursor":
@@ -107,11 +111,7 @@ def get_pg_connection(force_reconnect=False) -> Connection:
         logger.info("Database connection: reconnecting as connection was closed")
 
     connection: Connection = psycopg2.connect(
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST,
-        port=DB_PORT,
-        database=DB_NAME
+        user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT, database=DB_NAME
     )
     _pg_connection = connection
 

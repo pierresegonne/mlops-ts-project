@@ -3,10 +3,11 @@ from typing import Tuple
 import arrow
 import pandas as pd
 
-from libs.db.connection import get_pg_connection
+from src.libs.config.constants import Zone
+from src.libs.db.connection import get_pg_connection
 
 
-def query_flowtraced_data(zone_key: str, time_range: Tuple[str, str]) -> pd.DataFrame:
+def query_flowtraced_data(zone_key: Zone, time_range: Tuple[str, str]) -> pd.DataFrame:
     connection = get_pg_connection()
 
     query = """
@@ -17,13 +18,13 @@ def query_flowtraced_data(zone_key: str, time_range: Tuple[str, str]) -> pd.Data
     WHERE 1=1
         AND zone_key = %(zone_key)s
         AND datetime >= %(start)s
-        AND datetime <= %(end)s
+        AND datetime < %(end)s
     ORDER BY datetime ASC;
     """
 
     start_datetime, end_datetime = time_range
     params = {
-        "zone_key": zone_key,
+        "zone_key": zone_key.value,
         "start": arrow.get(start_datetime).format(),
         "end": arrow.get(end_datetime).format(),
     }

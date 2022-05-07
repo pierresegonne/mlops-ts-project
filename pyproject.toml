@@ -20,6 +20,9 @@ arrow = "^1.2.2"
 Flask = "^2.1.1"
 psycopg2 = "^2.9.3"
 google-cloud-secret-manager = "^2.10.0"
+colorlog = "^6.6.0"
+google-cloud-logging = "^3.0.0"
+google-cloud-storage = "^2.3.0"
 
 [tool.poetry.dev-dependencies]
 
@@ -30,6 +33,8 @@ test = 'scripts.tooling:test'
 test_watch = 'scripts.tooling:test_watch'
 typecheck = 'scripts.tooling:typecheck'
 check = 'scripts.tooling:check'
+start = 'src.__main__:develop'
+serve = 'scripts.serve:serve_dev'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
