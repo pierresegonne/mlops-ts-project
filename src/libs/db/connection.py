@@ -19,7 +19,7 @@ def get_gcp_secret(project_id: str, secret_id: str, version_id: str) -> str:
     response = client.access_secret_version(request=request)
 
     # Return the secret payload
-    payload = response.payload.data.decode("UTF-8")
+    payload = str(response.payload.data.decode("UTF-8"))
 
     return payload
 

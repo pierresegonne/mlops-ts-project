@@ -3,7 +3,6 @@ import logging
 import arrow
 import pandas as pd
 from google.cloud import storage
-from yaml import AnchorToken
 
 storage_client = storage.Client()
 
