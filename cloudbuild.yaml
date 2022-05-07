@@ -8,7 +8,7 @@ steps:
   # Test
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Test'
-    args: ['run', '--rm', '--entrypoint', 'poetry', '-it', 'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}', 'run', 'check']
+    args: ['run', '--rm', '--entrypoint', 'poetry', 'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}', 'run', 'check']
 
   # Docker push to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
