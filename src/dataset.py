@@ -5,6 +5,7 @@ from io import StringIO
 import arrow
 import pandas as pd
 from google.cloud import storage  # type: ignore[attr-defined]
+from numpy import nan
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +15,30 @@ from src.libs.db.flowtraced_data import query_flowtraced_data
 BUCKET_NAME = "mlops-ts-project"
 BUCKET_DATA_PATH = "data"
 
+relevant_columns = [
+    "zone_key",
+    "power_production_wind_avg",
+    "power_production_solar_avg",
+    "latest_forecasted_solar_avg",
+    "latest_forecasted_wind_x_avg",
+    "latest_forecasted_wind_y_avg",
+    "latest_forecasted_dewpoint_avg",
+    "latest_forecasted_temperature_avg",
+    "latest_forecasted_precipitation_avg",
+    "latest_forecasted_production_wind_avg",
+    "latest_forecasted_production_solar_avg",
+]
+
 
 def get_df_from_bucket(name: str) -> pd.DataFrame:
     client = storage.Client(os.environ["EMAP_PROJECT_ID"])
 
     bucket = client.get_bucket(BUCKET_NAME)
     data_str = bucket.blob(f"{BUCKET_DATA_PATH}/{name}.csv").download_as_text()
-    return pd.read_csv(StringIO(data_str), index_col="datetime", parse_dates=True)
+    df = pd.read_csv(StringIO(data_str), index_col="datetime", parse_dates=True)
+    df = df.fillna(nan)
+    df = df.astype({c: float for c in set(relevant_columns) - {"zone_key"}})
+    return df
 
 
 def save_df_to_bucket(name: str, df: pd.DataFrame) -> None:
@@ -35,20 +53,10 @@ def save_df_to_bucket(name: str, df: pd.DataFrame) -> None:
 def _clean_df(df: pd.DataFrame) -> pd.DataFrame:
     """Only keep relevant columns for the model"""
     # datetime is the index
-    relevant_columns = [
-        "zone_key",
-        "power_production_wind_avg",
-        "power_production_solar_avg",
-        "latest_forecasted_solar_avg",
-        "latest_forecasted_wind_x_avg",
-        "latest_forecasted_wind_y_avg",
-        "latest_forecasted_dewpoint_avg",
-        "latest_forecasted_temperature_avg",
-        "latest_forecasted_precipitation_avg",
-        "latest_forecasted_production_wind_avg",
-        "latest_forecasted_production_solar_avg",
-    ]
-    return df[relevant_columns].copy()
+    # NaNs replaced by empty strings
+    df = df[relevant_columns].copy()
+    df = df.fillna("")
+    return df
 
 
 def update() -> None:

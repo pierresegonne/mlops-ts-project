@@ -14,6 +14,9 @@ ENV EMAP_PROJECT_ID=tmrow-152415
 COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
 COPY .python-version .python-version
+COPY src src
+COPY scripts scripts
+COPY tests tests
 RUN apt-get update
 RUN apt-get install gcc -y
 RUN python -m pip install --upgrade pip
@@ -21,9 +24,6 @@ RUN pip install poetry==1.1.12
 RUN poetry config virtualenvs.create false
 RUN poetry install
 EXPOSE 5000
-COPY src src
-COPY scripts scripts
-COPY tests tests
 # Run the web service on container startup. Here we use the gunicorn
 # webserver, with one worker process and 8 threads.
 # For environments with multiple CPU cores, increase the number of workers
