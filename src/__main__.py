@@ -26,3 +26,10 @@ def update_data():
     update_dataset()
     logger.info("Update data: done")
     return "<p>Updated data to bucket!</p>"
+
+
+@app.route("/update_model")
+def update_model():
+    # TODO
+    # Could do: create training image, upload to registry and make call to vertexAI to start the training.
+    pass

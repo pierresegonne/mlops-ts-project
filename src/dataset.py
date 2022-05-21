@@ -9,25 +9,18 @@ from numpy import nan
 
 logger = logging.getLogger(__name__)
 
-from src.libs.config.constants import DATA_START_DATE, Zone
+from src.libs.config.constants import (
+    DATA_START_DATE,
+    Zone,
+    covariates_columns,
+    ts_columns,
+)
 from src.libs.db.flowtraced_data import query_flowtraced_data
 
 BUCKET_NAME = "mlops-ts-project"
 BUCKET_DATA_PATH = "data"
 
-relevant_columns = [
-    "zone_key",
-    "power_production_wind_avg",
-    "power_production_solar_avg",
-    "latest_forecasted_solar_avg",
-    "latest_forecasted_wind_x_avg",
-    "latest_forecasted_wind_y_avg",
-    "latest_forecasted_dewpoint_avg",
-    "latest_forecasted_temperature_avg",
-    "latest_forecasted_precipitation_avg",
-    "latest_forecasted_production_wind_avg",
-    "latest_forecasted_production_solar_avg",
-]
+relevant_columns = ["zone_key"] + ts_columns + covariates_columns
 
 
 def get_df_from_bucket(name: str) -> pd.DataFrame:
