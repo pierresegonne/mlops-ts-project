@@ -55,7 +55,7 @@ def _clean_df(df: pd.DataFrame) -> pd.DataFrame:
     # datetime is the index
     # NaNs replaced by empty strings
     df = df[relevant_columns].copy()
-    df = df.fillna("")
+    df = df.fillna(method="ffill")
     return df
 
 
