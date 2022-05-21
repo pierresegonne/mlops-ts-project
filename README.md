@@ -23,3 +23,7 @@ export POSTGRES_PORT=5432
 
 
 __run__
+
+```
+poetry run serve
+```
