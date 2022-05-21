@@ -22,5 +22,7 @@ def hello_world():
 
 @app.route("/update_data")
 def update_data():
+    logger.info("Update data: starting")
     update_dataset()
+    logger.info("Update data: done")
     return "<p>Updated data to bucket!</p>"

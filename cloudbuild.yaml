@@ -20,7 +20,10 @@ steps:
     id: 'Deploy'
     args: ['gcloud', 'run', 'services', 'update', 'mlops-ts-project',
            '--platform=managed', '--image=eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}',
-           '--region=europe-west1']
+           '--add-cloudsql-instances tmrow-152415:europe-west1:pgdb', '--vpc-connector shared-network',
+           '--region=europe-west1', '-set-env-vars POSTGRES_HOST=/cloudsql/tmrow-152415:europe-west1:pgdb',
+           '--set-env-vars POSTGRES_DB=electricitymap', '--set-env-vars POSTGRES_USER=postgres',
+           '--set-secrets POSTGRES_PASSWORD=POSTGRES_PASSWORD:latest']
 
 # Save test logs to Google Cloud Storage
 artifacts:
