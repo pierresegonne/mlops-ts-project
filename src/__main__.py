@@ -32,4 +32,7 @@ def update_data():
 def update_model():
     # TODO
     # Could do: create training image, upload to registry and make call to vertexAI to start the training.
+    # If in prod, then don't need to trigger a build of the training image
+    # This assumes that the training image is already built and available in the registry
+    # E.g that there is CD
     pass
