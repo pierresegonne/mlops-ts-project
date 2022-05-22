@@ -8,9 +8,22 @@ steps:
   # Test
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Test'
-    args: ['run', '--rm', '--entrypoint', 'poetry', 'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}', 'run', 'check']
+    args: ['run', '--rm', '--entrypoint', 'poetry', 'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-training:${SHORT_SHA}', 'run', 'check_training']
 
   # Docker push to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push'
-    args: ['push',  'eu.gcr.io/${PROJECT_ID}/mlops-ts-project:${SHORT_SHA}']
+    args: ['push',  'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-training:${SHORT_SHA}']
+
+# Save test logs to Google Cloud Storage
+artifacts:
+  objects:
+    location: gs://mlops-ts-project/build-logs/
+    paths:
+      - ${SHORT_SHA}_test_training_log.xml
+
+# Store images in Google Artifact Registry
+images:
+  - eu.gcr.io/${PROJECT_ID}/mlops-ts-project-training:${SHORT_SHA}
+
+timeout: 3600s
