@@ -1,11 +1,4 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: '/bin/sh'
-    args:
-      - '-c'
-      - |
-        ls -la
-
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build'
