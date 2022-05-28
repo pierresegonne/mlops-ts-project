@@ -27,3 +27,6 @@ __run__
 ```
 poetry run serve
 ```
+### Blog post
+
+The scripts for the blog post must be prefixed with `PYTHONPATH=.`
