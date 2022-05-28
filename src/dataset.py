@@ -4,7 +4,7 @@ from io import StringIO
 
 import arrow
 import pandas as pd
-from google.cloud import storage  # type: ignore[attr-defined]
+from google.cloud import storage
 from numpy import nan
 
 logger = logging.getLogger(__name__)

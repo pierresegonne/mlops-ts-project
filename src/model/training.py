@@ -10,7 +10,7 @@ from src.model.evaluation import run as run_evaluation
 
 
 def get_model() -> ForecastingModel:
-    return AutoARIMA()
+    return AutoARIMA() # type: ignore
 
 
 def save_model(model: ForecastingModel, name: str, tmp: bool = True) -> None:
@@ -23,7 +23,7 @@ def save_model(model: ForecastingModel, name: str, tmp: bool = True) -> None:
         raise NotImplementedError
 
 
-def run():
+def run() -> None:
     for zone_key in Zone:
         df = get_zone_data(zone_key)
         ts, covariates = get_timeseries(df)
@@ -32,7 +32,7 @@ def run():
         model.fit(
             train.univariate_component("power_production_wind_avg"),
             future_covariates=covariates,
-        )
+        ) # type: ignore
         save_model(model, zone_key)
     run_evaluation()
 

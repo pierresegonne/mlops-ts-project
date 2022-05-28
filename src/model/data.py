@@ -23,9 +23,9 @@ def get_timeseries(
     df: pd.DataFrame,
 ) -> Tuple[darts.timeseries.TimeSeries, darts.timeseries.TimeSeries]:
     ts = TimeSeries.from_dataframe(df[ts_columns])
-    ts = Scaler().fit_transform(ts)
+    ts = Scaler().fit_transform(ts)  # type: ignore
 
     ts_covariates = TimeSeries.from_dataframe(df[covariates_columns])
-    ts_covariates = Scaler().fit_transform(ts_covariates)
+    ts_covariates = Scaler().fit_transform(ts_covariates)  # type: ignore
 
     return ts, ts_covariates

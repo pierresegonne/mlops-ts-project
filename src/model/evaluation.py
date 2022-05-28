@@ -1,5 +1,6 @@
 import pickle
 from pathlib import Path
+from typing import cast
 
 from darts.metrics import mape
 from darts.models.forecasting.forecasting_model import ForecastingModel
@@ -16,7 +17,7 @@ def get_model(name: str, tmp: bool = True) -> ForecastingModel:
             model = pickle.load(f)
     else:
         raise NotImplementedError
-    return model
+    return cast(ForecastingModel, model)
 
 
 def save_eval(eval: object, name: str, tmp: bool = True) -> None:
@@ -29,13 +30,13 @@ def save_eval(eval: object, name: str, tmp: bool = True) -> None:
         raise NotImplementedError
 
 
-def run():
+def run() -> None:
     for zone_key in Zone:
         df = get_zone_data(zone_key)
         ts, covariates = get_timeseries(df)
         train, test = ts.split_before(0.75)
         model = get_model(zone_key)
-        forecast = model.predict(len(test), future_covariates=covariates)
+        forecast = model.predict(len(test), future_covariates=covariates)  # type: ignore
         eval = mape(test.univariate_component("power_production_wind_avg"), forecast)
         save_eval(eval, zone_key + "_eval")
 
