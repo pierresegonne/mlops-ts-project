@@ -1,0 +1,22 @@
+steps:
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build'
+    args: ['build', '--no-cache', '-t',
+           'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-predict:${SHORT_SHA}', '-f', 'src/model/Dockerfile.predict', '.']
+
+  # Test
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Test'
+    args: ['run', '--rm', '--entrypoint', 'poetry', 'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-predict:${SHORT_SHA}', 'run', 'check_predict']
+
+  # Docker push to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push'
+    args: ['push',  'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-predict:${SHORT_SHA}']
+
+# Store images in Google Artifact Registry
+images:
+  - eu.gcr.io/${PROJECT_ID}/mlops-ts-project-predict:${SHORT_SHA}
+
+timeout: 3600s

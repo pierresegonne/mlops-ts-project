@@ -10,3 +10,16 @@ How can we build a full-fledged ML pipeline, that leverages some of the cloud se
 
 ### The requirements
 
+* For the data inputs:
+
+Automatic data collection, and data readily available from a cloud storage.
+Data pre-processing and cleaning is kept to a minimum, because there are readily available feature store features out there, and we focus here on orchestrating a full-pipeline rather than optimising the details of each step
+
+* For training:
+
+* For evaluation:
+
+* For inference:
+
+* Monitoring:
+  All steps must generate logs that are easily available for monitoring.

@@ -35,4 +35,5 @@ def update_model():
     # If in prod, then don't need to trigger a build of the training image
     # This assumes that the training image is already built and available in the registry
     # E.g that there is CD
+    # This is actually the last thing we should worry about
     pass

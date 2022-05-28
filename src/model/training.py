@@ -22,6 +22,13 @@ def save_model(model: ForecastingModel, name: str, tmp: bool = True) -> None:
     else:
         raise NotImplementedError
 
+    """
+
+    AIP_MODEL_DIR: a Cloud Storage URI of a directory intended for saving model artifacts.
+    AIP_CHECKPOINT_DIR: a Cloud Storage URI of a directory intended for saving checkpoints.
+    AIP_TENSORBOARD_LOG_DIR: a Cloud Storage URI of a directory intended for saving TensorBoard logs. See Using Vertex AI TensorBoard with custom training.
+
+    """
 
 def run() -> None:
     for zone_key in Zone:

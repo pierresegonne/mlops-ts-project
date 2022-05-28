@@ -30,3 +30,9 @@ poetry run serve
 ### Blog post
 
 The scripts for the blog post must be prefixed with `PYTHONPATH=.`
+
+
+### Improvements
+
+- better project separation to not have to share dependencies.
+- `local-run` for training / to not have to write Dockerfile

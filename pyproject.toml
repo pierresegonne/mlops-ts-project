@@ -45,6 +45,8 @@ test_watch = 'scripts.tooling:test_watch'
 typecheck = 'scripts.tooling:typecheck'
 check = 'scripts.tooling:check'
 check_training = 'scripts.tooling:check'
+check_evaluation = 'scripts.tooling:check'
+check_predict = 'scripts.tooling:check'
 start = 'src.__main__:develop'
 serve = 'scripts.serve:serve_dev'
 

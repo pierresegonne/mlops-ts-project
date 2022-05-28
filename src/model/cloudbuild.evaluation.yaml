@@ -1,0 +1,22 @@
+steps:
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build'
+    args: ['build', '--no-cache', '-t',
+           'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-evaluation:${SHORT_SHA}', '-f', 'src/model/Dockerfile.evaluation', '.']
+
+  # Test
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Test'
+    args: ['run', '--rm', '--entrypoint', 'poetry', 'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-evaluation:${SHORT_SHA}', 'run', 'check_evaluation']
+
+  # Docker push to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push'
+    args: ['push',  'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-evaluation:${SHORT_SHA}']
+
+# Store images in Google Artifact Registry
+images:
+  - eu.gcr.io/${PROJECT_ID}/mlops-ts-project-evaluation:${SHORT_SHA}
+
+timeout: 3600s
