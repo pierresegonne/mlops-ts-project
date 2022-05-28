@@ -15,13 +15,6 @@ steps:
     id: 'Push'
     args: ['push',  'eu.gcr.io/${PROJECT_ID}/mlops-ts-project-training:${SHORT_SHA}']
 
-# Save test logs to Google Cloud Storage
-artifacts:
-  objects:
-    location: gs://mlops-ts-project/build-logs/
-    paths:
-      - ${SHORT_SHA}_test_training_log.xml
-
 # Store images in Google Artifact Registry
 images:
   - eu.gcr.io/${PROJECT_ID}/mlops-ts-project-training:${SHORT_SHA}
